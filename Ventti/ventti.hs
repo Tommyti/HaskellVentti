@@ -3,12 +3,33 @@ import System.random
 osallistuja = [Pelaaja, Jakaja]
 maa = [Pata, Risti, Ruutu, Hertta]
 kortinNo = [1 .. 13]
-pisteArvot = [1 || 11, 2, 3 .. 10, 10, 10, 10]
+kortit = [maa, kortinNo]
+pisteArvot = [1, 2, .. 10]
+pelaajaNo = [1, 2]
+
+data Pelaaja = Pelaaja {
+    kortit[pelaajaNo, kortit]
+} deriving (Eq, Show)
+
+head osallistuja = Pelaaja {
+    pelaajaNo = 1
+}
+tail osallistuja = Pelaaja {
+    pelaajaNo = 2
+}
+
+-- main
+main = do
+	putStrLn "Pelin aloitus "
+	jaa2korttiaP1
+    jaa2korttiaPC
+	-- Käyttäjän syöte
+	tila <- getLine
 
 
-jaa2korttiaP1
+jaa2korttiaP1 :: 
 
-jaa2korttiaPC
+jaa2korttiaPC :: 
 
 --Satunnaisen kortin jakamiseen
 satunnainenMaa x = randomRIO (1, 4)
@@ -21,14 +42,17 @@ poistaMaaPakasta x = x
 poistaKortti
 
 --Ässän pisteiden määrän valintaan
+valitseÄssänArvo :: Bool -> pisteArvot
 valitseÄssänArvo b = if b == True then 1
     else if b == False then 11
 
 --Kuvakortin tunnistamiseen
+onkoKuvakortti :: kortinNo -> Bool
 onkoKuvakortti b = if b > 10 then True
     else False
 
 --Ässän tunnistamiseen
+onkoAssa :: kortinNo -> Bool
 onkoAssa b = if b == 1 then True
     else False
 
@@ -39,6 +63,7 @@ skippaa
 vuoronVaihto
 
 --Pelin voittajan päättämiseen
+lopullisetPisteet :: pisteArvot -> pisteArvot -> Int
 lopullisetPisteet x y = if x > y && x <= 21 then p1Win
     else if y > x && y <=21 then pcWin
         else if x == y then pcWin
