@@ -1,3 +1,5 @@
+module Ventti where
+
 import System.random
 
 osallistuja = [Pelaaja, Jakaja]
@@ -6,6 +8,7 @@ kortinNo = [1 .. 13]
 kortit = [maa, kortinNo]
 pisteArvot = [1, 2, .. 10]
 pelaajaNo = [1, 2]
+pakka =
 
 data Pelaaja = Pelaaja {
     kortit[pelaajaNo, kortit]
@@ -13,19 +16,31 @@ data Pelaaja = Pelaaja {
 
 head osallistuja = Pelaaja {
     pelaajaNo = 1
-}
+} deriving (Eq, Show)
+
 tail osallistuja = Pelaaja {
     pelaajaNo = 2
-}
+} deriving (Eq, Show)
 
 -- main
+main :: IO ()
 main = do
-	putStrLn "Pelin aloitus "
-	jaa2korttiaP1
-    jaa2korttiaPC
-	-- Käyttäjän syöte
-	tila <- getLine
+	putStrLn "Ohjelma aloitettu "
+    luoPeli
 
+
+luoPeli :: IO Game
+luoPeli = do
+    putStrLn "Peli aloitettu "
+    jaa2korttiaP1 -- yhdeksi metodiksi?
+    jaa2korttiaPC -- yhdeksi metodiksi?
+
+	-- Käyttäjän syöte
+    syote <- getLine
+
+--satunnainen 52:stä kortista voi myös käydä
+jaaKortti :: 
+jaaKortti 
 
 jaa2korttiaP1 :: 
 
@@ -61,6 +76,9 @@ pyydaKortti
 skippaa
 
 vuoronVaihto
+
+getPisteet ::
+getPisteet 
 
 --Pelin voittajan päättämiseen
 lopullisetPisteet :: pisteArvot -> pisteArvot -> Int
