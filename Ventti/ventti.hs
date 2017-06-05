@@ -2,13 +2,33 @@ module Ventti where
 
 import System.random
 
-osallistuja = [Pelaaja, Jakaja]
-maa = [Pata, Risti, Ruutu, Hertta]
-kortinNo = [1 .. 13]
-kortit = [maa, kortinNo]
-pisteArvot = [1, 2, .. 10]
-pelaajaNo = [1, 2]
-pakka =
+data osallistuja = Pelaaja | Jakaja deriving (Show, Enum)
+data maa = Pata | Risti | Ruutu | Hertta deriving (Show, Enum)
+data kortinNo = [1 .. 13] deriving (Show, Enum)
+
+instance Show Value where
+    show 1 = "Ässä"
+    show 2 = "Kaksi"
+    show 3 = "Kolme"
+    show 4 = "Neljä"
+    show 5 = "Viisi"
+    show 6 = "Kuusi"
+    show 7 = "Seitsemän"
+    show 8 = "Kahdeksan"
+    show 9 = "Yhdeksän"
+    show 10 = "Kymmenen"
+    show 11 = "Jätkä"
+    show 12 = "Kuningatar"
+    show 13 = "Kuningas"
+
+type kortti = (maa, kortinNo)
+type pakka = [kortti]
+
+pisteArvot = (1, 2, .. 10)
+pelaajaNo = (1, 2)
+
+teePakka :: pakka
+teePakka = [(maa, kortinNo) | maa <- [Pata .. Hertta], kortinNo <- [1 .. 13]]
 
 data Pelaaja = Pelaaja {
     kortit[pelaajaNo, kortit]
@@ -32,6 +52,8 @@ main = do
 luoPeli :: IO Game
 luoPeli = do
     putStrLn "Peli aloitettu "
+    teePakka
+    
     jaa2korttiaP1 -- yhdeksi metodiksi?
     jaa2korttiaPC -- yhdeksi metodiksi?
 
