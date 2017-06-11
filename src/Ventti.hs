@@ -28,7 +28,7 @@ main = do
 	putStrLn "Ohjelma aloitettu "
     luoPeli
 
-
+--Pelin luominen
 luoPeli :: IO Game
 luoPeli = do
     putStrLn "Peli aloitettu "

@@ -1,4 +1,4 @@
-module Pakka (maa, kortinNo, pakka, pakanTila, teePakka, gen, mkDeck, draw, shuffle, takeRandomCard, takeCardAt) where
+module Pakka (maa, kortinNo, pakka, pakanTila, teePakka) where
 
 import System.Random
 
@@ -84,31 +84,3 @@ onkoAssa :: kortinNo -> Bool
 onkoAssa b = if b == 1 then True
     else False
 
-
-
-
-
-
-
-
-        -- |'takeRandomCard' will pick one random card from the deck and remove it.
-        -- It is a helper-function used by 'shuffle'.
-        takeRandomCard :: DeckS Card
-        takeRandomCard = do
-          curr <- get
-          let n = length $ cards curr
-              (i, gen') = randomR (0, n) $ gen curr
-          card <- takeCardAt i
-          put curr { gen = gen' }
-          return card
-
-        -- |'takeCardAt' will pick the card at the given index and remove it from the
-        -- deck.
-        takeCardAt :: Int -> DeckS Card
-        takeCardAt i = do
-          curr <- get
-          let (cards', cards'') = splitAt (i + 1) $ cards curr
-              card              = last cards'
-              newCards          = init cards' ++ cards''
-          put curr { cards = newCards }
-          return card
