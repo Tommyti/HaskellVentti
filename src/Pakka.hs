@@ -1,10 +1,10 @@
-module Pakka (maa, kortinNo, pakka, pakanTila, teePakka) where
+module Pakka (Maa, KortinNo, Pakka, PakanTila, TeePakka) where --lisää kaikki moduulit
 
 import System.Random
 
 --Data ja tyypit
-data maa = Pata | Risti | Ruutu | Hertta deriving (Show, Enum)
-data kortinNo = [1 .. 13] deriving (Show, Enum)
+data Maa = Pata | Risti | Ruutu | Hertta deriving (Show, Enum)
+data KortinNo = [1..13] deriving (Show, Enum)
 instance Show Value where
     show 1 = "Ässä"
     show 2 = "Kaksi"
@@ -19,14 +19,15 @@ instance Show Value where
     show 11 = "Jätkä"
     show 12 = "Kuningatar"
     show 13 = "Kuningas"
-type kortti = (maa, kortinNo)
-type pakka = [kortti]
-type pakanTila s = State pakka s
+type Kortti = (Maa, KortinNo)
+type Pakka = [Kortti]
+type PakanTila s = State Pakka s
 
-teePakka :: pakka
-teePakka = [(maa, kortinNo) | maa <- [Pata .. Hertta], kortinNo <- [1 .. 13]]
+--Tekee pakan korteista
+teePakka :: Pakka
+teePakka = [(Maa, KortinNo) | Maa <- [Pata .. Hertta], KortinNo <- [1 .. 13]]
 
-mahdPisteet :: [kortti] -> [Int]
+mahdPisteet :: [Kortti] -> [Int]
 mahdPisteet = go [0] where
         go ns (1:rest) = go (map ((+) 1) ns ++ map ((+) 11) ns) rest
         go ns (2:rest) = go (map ((+) 2) ns) rest
@@ -42,45 +43,39 @@ mahdPisteet = go [0] where
         go ns (12:rest) = go (map ((+) 10) ns) rest
         go ns (13:rest) = go (map ((+) 10) ns) rest
 
-sekoitaPakka :: pakkaTila ()
-sekoitaPakka = do
+--sekoitaPakka :: pakkaTila ()
+--sekoitaPakka = do
   --todo
   --curr <- get
   --shuffled <- replicateM 52 takeRandomCard
   --put curr { cards = shuffled }
+  --putStrLn "Pakka sekoitettu. "
 
-jaaKortti :: osallistuja
-jaaKortti do
-    curr <- get
-    let n = length $ cards curr
-        (i, gen') = randomR (0, n) $ gen curr
-    card <- takeCardAt i
-    put curr { gen = gen' }
-    return card
 
+--Jakaa pakasta päälimmäisen kortin
+--jaaKortti :: 
 
 --Satunnaisen kortin jakamiseen
 --satunnainenMaa x = randomRIO (1, 4)
 --satunnainenNo x = randomRIO (1, 13)
-satunnainenKortti
+--satunnainenKortti
 
 --Jaetun kortin poistaminen pakasta
-poistaNoPakasta x = x
-poistaMaaPakasta x = x
-poistaKortti
+--poistaNoPakasta x = x
+--poistaMaaPakasta x = x
+--poistaKortti
 
 --Ässän pisteiden määrän valintaan
-valitseÄssänArvo :: Bool -> pisteArvot
-valitseÄssänArvo b = if b == True then 1
-    else if b == False then 11-
+--valitseAssanArvo :: Bool -> pisteArvot
+--valitseAssanArvo b = if b == True then 1
+--    else if b == False then 11
 
 --Kuvakortin tunnistamiseen
-onkoKuvakortti :: kortinNo -> Bool
-onkoKuvakortti b = if b > 10 then True
-    else False
+--onkoKuvakortti :: KortinNo -> Bool
+--onkoKuvakortti b = if b > 10 then True
+--    else False
 
 --Ässän tunnistamiseen
-onkoAssa :: kortinNo -> Bool
-onkoAssa b = if b == 1 then True
-    else False
-
+--onkoAssa :: KortinNo -> Bool
+--onkoAssa b = if b == 1 then True
+--    else False

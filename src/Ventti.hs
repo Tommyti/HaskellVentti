@@ -3,24 +3,16 @@ module Ventti where
 import Pakka
 
 --Data ja tyypit
-data osallistuja = Pelaaja | Jakaja deriving (Show, Enum)
+data Osallistuja = Pelaaja | Jakaja deriving (Show, Enum)
+data Pelaaja = Pelaaja {
+    Kortit[pelaajaNo, kortit]
+} deriving (Eq, Show)
+data Peli = Peli {
+    --pelin tiedot tänne
+}
 
 p1Win = "Pelaaja voitti pelin!"
 pcWin = "Tietokone voitti pelin!"
-
-pelaajaNo = (1, 2)
-
-data Pelaaja = Pelaaja {
-    kortit[pelaajaNo, kortit]
-} deriving (Eq, Show)
-
-head osallistuja = Pelaaja {
-    pelaajaNo = 1
-} deriving (Eq, Show)
-
-tail osallistuja = Pelaaja {
-    pelaajaNo = 2
-} deriving (Eq, Show)
 
 -- main
 main :: IO ()
@@ -33,6 +25,7 @@ luoPeli :: IO Game
 luoPeli = do
     putStrLn "Peli aloitettu "
     teePakka
+    sekoitaPakka
 
     jaa2korttiaP1 -- yhdeksi metodiksi?
     jaa2korttiaPC -- yhdeksi metodiksi?
