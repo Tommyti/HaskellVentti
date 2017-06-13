@@ -3,12 +3,16 @@ module Ventti where
 import Pakka
 
 --Data ja tyypit
-data Osallistuja = Pelaaja | Jakaja deriving (Show, Enum)
-data Pelaaja = Pelaaja {
-    Kortit[pelaajaNo, kortit]
-} deriving (Eq, Show)
+data Osallistuja = Pelaaja | Jakaja deriving (Show, Eq)
+data Liike = Ota kortti | Jää (Show, Eq)
+
+--Pelin ja pelaajien tiedot
 data Peli = Peli {
-    --pelin tiedot tänne
+    pakka :: Pakka,
+    pelaajaKasi :: [Kortti],
+    jakajaKasi :: [Kortti],
+    pelaajaLiike :: Liike,
+    jakajaLiike :: Liike
 }
 
 p1Win = "Pelaaja voitti pelin!"
@@ -34,19 +38,29 @@ luoPeli = do
     syote <- getLine
 
 
-
-jaa2korttiaP1 ::
-
-jaa2korttiaPC ::
+--Jää
+jaa :: 
 
 
+otaKortti :: 
 
-skippaa
 
-vuoronVaihto
+--Vuoron vaihto metodi
+vaihdaVuoroa :: 
 
-getPisteet ::
+
+--Vuoron get metodi
+getVuoro :: Bool
+
+
+--Pisteiden get metodi
+getPisteet :: Int
 getPisteet
+
+
+--Pelaajan syötteen tarkistus
+syoteTarkistus ::
+
 
 --Pelin voittajan päättämiseen
 lopullisetPisteet :: pisteArvot -> pisteArvot -> Int

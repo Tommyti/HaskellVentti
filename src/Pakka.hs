@@ -53,7 +53,7 @@ mahdPisteet = go [0] where
 
 
 --Jakaa pakasta päälimmäisen kortin
---jaaKortti :: 
+--jaaKortti ::
 
 --Satunnaisen kortin jakamiseen
 --satunnainenMaa x = randomRIO (1, 4)
