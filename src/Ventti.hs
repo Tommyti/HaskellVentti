@@ -41,7 +41,7 @@ luoPeli = do
 --Jää
 jaa :: 
 
-
+--Kortin ottamis metodi
 otaKortti :: 
 
 
