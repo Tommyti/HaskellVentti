@@ -1,6 +1,7 @@
 module Ventti where
 
 import Pakka
+import Control.Monad.State
 
 --Data ja tyypit
 data Osallistuja = Pelaaja | Jakaja deriving (Show, Eq)
@@ -15,6 +16,8 @@ data Peli = Peli {
     jakajaLiike :: Liike
 }
 
+type PeliTila a = StateT Peli a
+
 p1Win = "Pelaaja voitti pelin!"
 pcWin = "Tietokone voitti pelin!"
 
@@ -25,7 +28,7 @@ main = do
     luoPeli
 
 --Pelin luominen
-luoPeli :: IO Game
+luoPeli :: IO Peli
 luoPeli = do
     putStrLn "Peli aloitettu "
     teePakka
@@ -37,6 +40,10 @@ luoPeli = do
 	-- Käyttäjän syöte
     syote <- getLine
 
+
+peliLooppi :: IO PeliTila
+peliLooppi = do
+    curr <- get
 
 --Jää
 jaa :: 

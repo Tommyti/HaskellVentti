@@ -1,10 +1,11 @@
 module Pakka (Maa, KortinNo, Pakka, PakanTila, TeePakka) where --lisää kaikki moduulit
 
 import System.Random
+import Control.Monad.State
 
 --Data ja tyypit
 data Maa = Pata | Risti | Ruutu | Hertta deriving (Show, Enum)
-data KortinNo = [1 ... 13] deriving (Show, Enum)
+data KortinNo = [1..13] deriving (Show, Enum)
 instance Show Value where
 	show 1 = "Ässä"
 	show 2 = "Kaksi"
