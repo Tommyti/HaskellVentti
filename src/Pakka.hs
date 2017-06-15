@@ -1,11 +1,16 @@
-module Pakka (Maa, KortinNo, Pakka, PakanTila, TeePakka) where --lisää kaikki moduulit
+module Pakka (Maa, KortinNo, Pakka, PakanTila, TeePakka, mahdArvot, mahdPisteet) where --lisää kaikki moduulit
 
 import System.Random
-import Control.Monad.State
+import Control.Monad
+
+import Data.Range --ehkä turha
 
 --Data ja tyypit
 data Maa = Pata | Risti | Ruutu | Hertta deriving (Show, Enum)
-data KortinNo = [1..13] deriving (Show, Enum)
+data KortinNo = [] deriving (Show, Enum)
+--Rangen parsinta ongelman kiertämiseen
+KortinNo = range 1 1 13
+
 instance Show Value where
 	show 1 = "Ässä"
 	show 2 = "Kaksi"
@@ -30,10 +35,10 @@ teePakka = [(Maa, KortinNo) | Maa <- [Pata .. Hertta], KortinNo <- [1 .. 13]]
 
 --Pakan korttien piste arvot
 mahdArvot :: Kortti -> [Int]
-mahdArvot k
-	k == Ace = [1, 11]
-	elem k [Jätkä, Kuningatar, Kuningas] = 10
-	otherwise = fromEnum k
+mahdArvot kortti
+	| kortti == 1 = [1, 11]
+	| elem kortti [11, 12, 13] = 10
+	| otherwise = fromEnum kortti
 
 --Pakan korttien pisteet
 mahdPisteet :: [Kortti] -> [Int]
@@ -43,8 +48,8 @@ mahdPisteet kasi = nub $ map sum $ mapM mahdArvot kasi
 otaSatunnainenKortti :: PakanTila Kortti
 otaSatunnainenKortti = do
 	curr <- get
-	let n = length $ Pakka curr
-		(i, gen') = randomR (0, n) $ gen curr
+	let pituus = length $ Pakka curr
+		(i, gen') = randomR (0, pituus) $ gen curr
 	Kortti <- otaXKortti i
 	put curr { gen = gen' }
 	return Kortti
