@@ -32,8 +32,9 @@ luoPeli :: IO Peli
 luoPeli = do
     putStrLn "Peli aloitettu "
     teePakka
-    sekoitaPakka
+    --sekoitaPakka
 
+    
     jaa2korttiaP1 -- yhdeksi metodiksi?
     jaa2korttiaPC -- yhdeksi metodiksi?
 

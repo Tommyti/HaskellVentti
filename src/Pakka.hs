@@ -39,14 +39,34 @@ mahdArvot k
 mahdPisteet :: [Kortti] -> [Int]
 mahdPisteet kasi = nub $ map sum $ mapM mahdArvot kasi
 
---sekoitaPakka :: pakkaTila ()
---sekoitaPakka = do
-	--todo
-	--curr <- get
-	--shuffled <- replicateM 52 takeRandomCard
-	--put curr { cards = shuffled }
-	--putStrLn "Pakka sekoitettu. "
+--Satunnainen kortti pakasta
+otaSatunnainenKortti :: PakanTila Kortti
+otaSatunnainenKortti = do
+	curr <- get
+	let n = length $ Pakka curr
+		(i, gen') = randomR (0, n) $ gen curr
+	Kortti <- otaXKortti i
+	put curr { gen = gen' }
+	return Kortti
 
+--Kortin otaamiseen pakasta
+otaXKortti :: Int -> PakanTila Kortti
+otaXKortti x = do
+	curr <- get
+	let (Pakka', Pakka'') = splitAt (i + 1) $ Pakka curr
+		Kortti = last Pakka'
+		uusiPakka = init Pakka' ++ Pakka''
+	put curr { Pakka = uusiPakka }
+	return Kortti
+
+getPakanTila :: 
+
+--Pakan sekoittamiseen
+sekoitaPakka :: pakkaTila ()
+sekoitaPakka = do
+	curr <- get
+	sekoitus <- replicateM 52 otaSatunnainenKortti
+	put curr { Pakka = sekoitus }
 
 --Jakaa pakasta päälimmäisen kortin
 --jaaKortti ::
