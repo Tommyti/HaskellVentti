@@ -13,7 +13,8 @@ data Peli = Peli {
     pelaajaKasi :: [Kortti],
     jakajaKasi :: [Kortti],
     pelaajaLiike :: Liike,
-    jakajaLiike :: Liike
+    jakajaLiike :: Liike,
+    vuoro :: Osallistuja
 }
 
 type PeliTila a = StateT Peli a
@@ -24,57 +25,81 @@ pcWin = "Tietokone voitti pelin!"
 -- main
 main :: IO ()
 main = do
-	putStrLn "Ohjelma aloitettu "
+    putStrLn "Ohjelma aloitettu "
     luoPeli
 
 --Pelin luominen
-luoPeli :: IO Peli
+luoPeli :: IO PeliTila
 luoPeli = do
     putStrLn "Peli aloitettu "
     teePakka
-    --sekoitaPakka
-
+    sekoitaPakka
+    setVuoro 1
+    otaKortti
+    otaKortti
+    vaihdaVuoroa
+    otaKortti
+    otaKortti
+    vaihdaVuoroa
+    peliLooppi
     
-    jaa2korttiaP1 -- yhdeksi metodiksi?
-    jaa2korttiaPC -- yhdeksi metodiksi?
 
-	-- Käyttäjän syöte
-    syote <- getLine
-
-
+--Pyörittää peliä
 peliLooppi :: IO PeliTila
 peliLooppi = do
     curr <- get
 
+    getTilanne
+    -- Käyttäjän syöte
+    syote <- getLine
+
+    --otaKortti
+    --getPisteet
+
+--Ota kortti omaan käteen
+otaKortti :: [Kortti]
+otaKortti = otaXKortti 0
+
 --Jää
-jaa :: 
+jaa :: Osallistuja
+jaa = vaihdaVuoroa
 
---Kortin ottamis metodi
-otaKortti :: 
+--Vuoron asetus funktio, 1=pelaaja 2=jakaja
+setVuoro :: Int -> Osallistuja
+setVuoro x = 
 
+--Vuoron vaihto funktio
+vaihdaVuoroa :: Osallistuja -> Osallistuja
+vaihdaVuoroa = do x=getVuoro
+    if x==Pelaaja return Jakaja
+    else return Pelaaja
 
---Vuoron vaihto metodi
-vaihdaVuoroa :: 
+--Vuoron get funktio
+getVuoro :: Osallistuja
+getVuoro = do x=vuoro
+    return x
 
-
---Vuoron get metodi
-getVuoro :: Bool
-
-
---Pisteiden get metodi
+--Pisteiden get funktio
 getPisteet :: Int
-getPisteet
+getPisteet = do
+
+--Jakajan ja pelaajan korttien tulostamiseen
+getTilanne :: 
 
 
 --Pelaajan syötteen tarkistus
-syoteTarkistus ::
-
+syoteTarkistus :: a -> Int
+syoteTarkistus x = case x of
+    1 -> 1
+    2 -> 2
+    3 -> 3
+    _ -> 0 --Käyttäjän väärälle syötteelle
 
 --Pelin voittajan päättämiseen
-lopullisetPisteet :: pisteArvot -> pisteArvot -> Int
-lopullisetPisteet x y = if x > y && x <= 21 then p1Win
-    else if y > x && y <=21 then pcWin
-        else if x == y then pcWin
+--lopullisetPisteet :: pisteArvot -> pisteArvot -> Int
+--lopullisetPisteet x y = if x > y && x <= 21 then p1Win
+--    else if y > x && y <=21 then pcWin
+--        else if x == y then pcWin
 
 
 
