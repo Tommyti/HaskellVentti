@@ -18,6 +18,7 @@ data Peli = Peli {
     jakajaStrategia :: Strategia
 }
 
+--Pelin tila ja jakajaa (kone) varten ominaisuus
 type PeliTila a = StateT Peli a
 type Strategia = [Kortti] -> PeliTila IO (Liike)
 
@@ -28,23 +29,8 @@ pcWin = "Tietokone voitti pelin!"
 main :: IO ()
 main = do
     putStrLn "Ohjelma aloitettu "
-    luoPeli
-
---Pelin luominen
-luoPeli :: IO PeliTila
-luoPeli = do
-    putStrLn "Peli aloitettu "
-    teePakka
-    sekoitaPakka
-    setVuoro 1
-    otaKortti
-    otaKortti
-    vaihdaVuoroa
-    otaKortti
-    otaKortti
-    vaihdaVuoroa
-    peliLooppi
-    
+    StdGen <- getStdGen
+    evalStateT peliLooppi $ teePeli StdGen     
 
 --Pyörittää peliä
 peliLooppi :: PeliTila IO ()
@@ -56,6 +42,7 @@ peliLooppi = do
     when peliLoppu hoidaLoppunutPeli
     when (not peliLoppu) peliLooppi
 
+--Tarkistaa menikö jommalla kummalla pisteet yli, jatkavatko peliä tai voittiko toinen
 onkoPeliLoppu :: PeliTila IO Bool
 onkoPeliLoppu = do
     curr <- get
@@ -73,6 +60,7 @@ onkoPeliLoppu = do
 
     return peliLoppu
 
+--Näyttää tulokset ja kertoo pelaajalle jos voitti/hävisi
 hoidaLoppunutPeli :: PeliTila IO ()
 hoidaLoppunutPeli = do
     curr <- get
@@ -84,6 +72,7 @@ hoidaLoppunutPeli = do
     when voittaja $ liftIO .  putStrLn $ "Voitit!"
     when (not voittaja) $liftIO . putStrLn $ "Hävisit!"
 
+--Kysyy pelaajalta haluaako tämä lisää kortteja
 hoidaPelaaja :: Pelitila IO ()
 hoidaPelaaja = do
     curr <- get
@@ -107,11 +96,12 @@ hoidaPelaaja = do
     when (vastaus == Jää) $ do
         put curr { pelaajaLiike = Jää }
 
+--Kertoo pelaajalle mitä jakaja teki vuorollaan
 hoidaJakaja :: PeliTila IO ()
 hoidaJakaja = do
     curr <- get
     liike <- jakajaStrategia curr $ jakajaKasi curr
-    when (liike == Ota) $ do
+    when (liike == Otakortti) $ do
         let (kortti, pakka') = runState jaa $ pakka curr
         put curr { pakka = pakka'
                  , jakajaKasi = kortti : jakajaKasi curr }
@@ -123,29 +113,33 @@ hoidaJakaja = do
         put curr { jakajaLiike = Jää }
         liftIO . putStrLn $ "Jakaja ei ottanut korttia"
 
-
+--Näyttää jakajan käden
 naytaJakaja :: [Kortti] -> String
 naytaJakaja kasi = "[" ++ (show $ head kasi) ++ "," ++ (intersperse ',' hidden) ++ "]"
     where x = length $ tail kasi
           hidden = replicate x '?'
 
-
+--Tarkistaa voittajan
 voitti :: [Kortti] -> [Kortti] -> Bool
 voitti pelaajaK jakajaK = pelaajanPisteet > jakajanPisteet
     where pelaajanPisteet = score pelaajaKasi
           jakajanPisteet  = score jakajanKasi
 
+--Tarkistaa pisteet
 pisteet :: [Kortti] -> Int
 pisteet x
     | yli x    = 0
     | muuten   = paras x
 
+--Tarkistaa meneekö pisteet yli 21
 yli :: [Kortti] -> Bool
 yli = and . map ((<) 21) . mahdPisteet
 
+--Tarkistaa tuliko pisteiksi 21
 kakskytYks :: [Kortti] -> Bool
 kakskytYks = any ((==) 21) . mahdPisteet
 
+--Paras tulos
 paras :: [Kortti] -> Int
 paras = maximum . filter ((>=) 21) . mahdPisteet
 
@@ -153,6 +147,7 @@ paras = maximum . filter ((>=) 21) . mahdPisteet
 otaKortti :: [Kortti]
 otaKortti = otaXKortti 0
 
+--Tekee pelin
 teePeli :: StdGen -> Strategia -> Peli
 teePeli x strategia = Peli
     { pakka = p'
@@ -164,7 +159,7 @@ teePeli x strategia = Peli
     where p = execState sekoitaPakka $ teePeli x
           ((pelaajaK, jakajaK), p') = runState jaa $ p
 
---Jää
+--Jakaa kortit
 jaa :: PakanTila ([Kortti], [Kortti])
 jaa = do
     pelaaja   <- ota

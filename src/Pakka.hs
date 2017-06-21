@@ -1,7 +1,7 @@
 module Pakka (Maa, KortinNo, Pakka, PakanTila, TeePakka, mahdArvot, mahdPisteet) where --lisää kaikki moduulit
 
 import System.Random
---import Control.Monad.State
+import Control.Monad.ST
 import Control.Monad.Trans.State
 import Data.Ix --ehkä turha
 
@@ -33,7 +33,8 @@ data Pakka = Pakka
 
 type PakanTila s = StateT Pakka s
 
-ota :: PakanTila Kortti
+--Ottaa kortin pakan päältä
+ota :: PakanTila -> Kortti
 ota = otaXKortti 0
 
 --Tekee pakan korteista
@@ -52,7 +53,7 @@ mahdPisteet :: [Kortti] -> [Int]
 mahdPisteet kasi = nub $ map sum $ mapM mahdArvot kasi
 
 --Satunnainen kortti pakasta
-otaSatunnainenKortti :: PakanTila Kortti
+otaSatunnainenKortti :: PakanTila -> Kortti
 otaSatunnainenKortti = do
     curr <- get
     let pituus = length $ pakka curr
