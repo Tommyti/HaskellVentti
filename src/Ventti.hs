@@ -5,7 +5,7 @@ import Control.Monad.State
 
 --Data ja tyypit
 data Osallistuja = Pelaaja | Jakaja deriving (Show, Eq)
-data Liike = Ota kortti | Jää (Show, Eq)
+data Liike = Otakortti | Jää | Tulosta (Show, Eq) --Tilanteen tulostaminen testaamiseen
 
 --Pelin ja pelaajien tiedot
 data Peli = Peli {
@@ -14,6 +14,8 @@ data Peli = Peli {
     jakajaKasi :: [Kortti],
     pelaajaLiike :: Liike,
     jakajaLiike :: Liike,
+    pelaajaPisteet :: Int,
+    jakajaPisteet :: Int,
     vuoro :: Osallistuja
 }
 
@@ -66,12 +68,12 @@ jaa = vaihdaVuoroa
 
 --Vuoron asetus funktio, 1=pelaaja 2=jakaja
 setVuoro :: Int -> Osallistuja
-setVuoro x = 
+setVuoro x = x
 
 --Vuoron vaihto funktio
 vaihdaVuoroa :: Osallistuja -> Osallistuja
-vaihdaVuoroa = do x=getVuoro
-    if x==Pelaaja return Jakaja
+vaihdaVuoroa = do y = getVuoro
+    if y == Pelaaja return Jakaja
     else return Pelaaja
 
 --Vuoron get funktio
@@ -82,6 +84,8 @@ getVuoro = do x=vuoro
 --Pisteiden get funktio
 getPisteet :: Int
 getPisteet = do
+
+getJakajanPisteet :: Int
 
 --Jakajan ja pelaajan korttien tulostamiseen
 getTilanne :: 
@@ -94,6 +98,25 @@ syoteTarkistus x = case x of
     2 -> 2
     3 -> 3
     _ -> 0 --Käyttäjän väärälle syötteelle
+
+--Jakajan liikeen päättämiseen
+jakajanLiike :: jakajaKasi -> Liike
+jakajanLiike kasi
+  | pisteet < 17 = Otakortti
+  | pisteet == 17 = if softKasi kasi then Otakortti else Jää
+  | otherwise = Jää
+  where pisteet = getJakajanPisteet kasi
+
+pelaajanLiike :: Int -> Liike
+pelaajanLiike numero
+  | numero == 1 = Otakortti
+  | numero == 2 = Jää
+  | numero > 2 = Tulosta
+
+
+--"Pehmeä käsi"
+softKasi :: [Kortti] -> Bool
+softKasi kasi = elem kasi 1
 
 --Pelin voittajan päättämiseen
 --lopullisetPisteet :: pisteArvot -> pisteArvot -> Int
