@@ -1,36 +1,44 @@
 module Pakka (Maa, KortinNo, Pakka, PakanTila, TeePakka, mahdArvot, mahdPisteet) where --lisää kaikki moduulit
 
 import System.Random
-import Control.Monad
-import Data.Range --ehkä turha
+--import Control.Monad.State
+import Control.Monad.Trans.State
+import Data.Ix --ehkä turha
 
 --Data ja tyypit
 data Maa = Pata | Risti | Ruutu | Hertta deriving (Show, Enum)
-data KortinNo = [] deriving (Show, Enum)
---Rangen parsinta ongelman kiertämiseen
-KortinNo = range 1 1 13
+data KortinNo = Assa | Kaksi | Kolme | Nelja | Viisi | Kuusi | Seitseman | Kahdeksan | Yhdeksan | Kymmenen | Jatka | Rouva | Kuningas deriving (Eq, Ord, Bounded, Enum)
 
-instance Show Value where
-    show 1 = "Ässä"
-    show 2 = "Kaksi"
-    show 3 = "Kolme"
-    show 4 = "Neljä"
-    show 5 = "Viisi"
-    show 6 = "Kuusi"
-    show 7 = "Seitsemän"
-    show 8 = "Kahdeksan"
-    show 9 = "Yhdeksän"
-    show 10 = "Kymmenen"
-    show 11 = "Jätkä"
-    show 12 = "Kuningatar"
-    show 13 = "Kuningas"
+instance Show KortinNo where
+    show a = case a of
+        Assa      -> "1"
+        Kaksi     -> "2"
+        Kolme     -> "3"
+        Nelja     -> "4"
+        Viisi     -> "5"
+        Kuusi     -> "6"
+        Seitseman -> "7"
+        Kahdeksan -> "8"
+        Yhdeksan  -> "9"
+        Kymmenen  -> "10"
+        Jatka     -> "11"
+        Rouva     -> "12"
+        Kuningas  -> "13"
+
 type Kortti = (Maa, KortinNo)
-type Pakka = [Kortti]
-type PakanTila s = State Pakka s
+data Pakka = Pakka
+   { pakka :: [Kortti]
+   , gen :: StdGen }
+   deriving (Show)
+
+type PakanTila s = StateT Pakka s
+
+ota :: PakanTila Kortti
+ota = otaXKortti 0
 
 --Tekee pakan korteista
-teePakka :: Pakka
-teePakka = [(Maa, KortinNo) | Maa <- [Pata .. Hertta], KortinNo <- [1 .. 13]]
+teePakka :: StdGen -> Pakka
+teePakka = [(maa, kortinNo) | maa <- [Pata .. Hertta], kortinNo <- [1 .. 13]]
 
 --Pakan korttien piste arvot
 mahdArvot :: Kortti -> [Int]
@@ -47,27 +55,27 @@ mahdPisteet kasi = nub $ map sum $ mapM mahdArvot kasi
 otaSatunnainenKortti :: PakanTila Kortti
 otaSatunnainenKortti = do
     curr <- get
-    let pituus = length $ Pakka curr
-       (i, gen') = randomR (0, pituus) $ gen curr
-    Kortti <- otaXKortti i
+    let pituus = length $ pakka curr
+        (i, gen') = randomR (0, pituus) $ gen curr
+    kortti <- otaXKortti i
     put curr { gen = gen' }
-    return Kortti
+    return kortti
 
 --Kortin otaamiseen pakasta
 otaXKortti :: Int -> PakanTila Kortti
 otaXKortti x = do
     curr <- get
-    let (Pakka', Pakka'') = splitAt (i + 1) $ Pakka curr
-        Kortti = last Pakka'
-        uusiPakka = init Pakka' ++ Pakka''
-    put curr { Pakka = uusiPakka }
-    return Kortti
+    let (pakka', pakka'') = splitAt (i + 1) $ pakka curr
+        kortti = last pakka'
+        uusiPakka = init pakka' ++ pakka''
+    put curr { pakka = uusiPakka }
+    return kortti
 
 --Pakan sekoittamiseen
-sekoitaPakka :: pakkaTila ()
+sekoitaPakka :: PakanTila ()
 sekoitaPakka = do
     curr <- get
     sekoitus <- replicateM 52 otaSatunnainenKortti
-    put curr { Pakka = sekoitus }
+    put curr { pakka = sekoitus }
 
 --getPakanTila :: PakanTila
