@@ -1,15 +1,9 @@
 module Pakka (Maa, KortinNo, Pakka, PakanTila, TeePakka, mahdArvot, mahdPisteet, ota, teePakka, otaSatunnainenKortti, otaXKortti, sekoitaPakka) where
 
 import System.Random
-<<<<<<< HEAD
 import Control.Monad.ST
 import Control.Monad.Trans.State
 import Data.Ix --ehkä turha
-=======
---import Control.Monad.State
-import Control.Monad.Trans.State
-import Data.Ix
->>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
 
 --Data ja tyypit
 data Maa = Pata | Risti | Ruutu | Hertta deriving (Show, Enum)
@@ -39,10 +33,7 @@ data Pakka = Pakka
 
 type PakanTila s = StateT Pakka s
 
-<<<<<<< HEAD
 --Ottaa kortin pakan päältä
-=======
->>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
 ota :: PakanTila -> Kortti
 ota = otaXKortti 0
 
@@ -65,15 +56,9 @@ mahdPisteet kasi = nub $ map sum $ mapM mahdArvot kasi
 otaSatunnainenKortti :: PakanTila -> Kortti
 otaSatunnainenKortti = do
     curr <- get
-<<<<<<< HEAD
     let pituus = length $ pakka curr
         (i, gen') = randomR (0, pituus) $ gen curr
     kortti <- otaXKortti i
-=======
-    let pituus = length $ Pakka curr
-        (i, gen') = randomR (0, pituus) $ gen curr
-    Kortti <- otaXKortti i
->>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
     put curr { gen = gen' }
     return kortti
 
@@ -92,10 +77,6 @@ sekoitaPakka :: PakanTila ()
 sekoitaPakka = do
     curr <- get
     sekoitus <- replicateM 52 otaSatunnainenKortti
-<<<<<<< HEAD
     put curr { pakka = sekoitus }
 
 --getPakanTila :: PakanTila
-=======
-    put curr { Pakka = sekoitus }
->>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
