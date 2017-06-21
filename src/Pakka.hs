@@ -63,9 +63,6 @@ otaXKortti x = do
     put curr { Pakka = uusiPakka }
     return Kortti
 
-getPakanTila :: PakanTila
-
-
 --Pakan sekoittamiseen
 sekoitaPakka :: pakkaTila ()
 sekoitaPakka = do
@@ -73,5 +70,4 @@ sekoitaPakka = do
     sekoitus <- replicateM 52 otaSatunnainenKortti
     put curr { Pakka = sekoitus }
 
---Jakaa pakasta päälimmäisen kortin
---jaaKortti ::
+--getPakanTila :: PakanTila

@@ -24,7 +24,7 @@ type PeliTila a = StateT Peli a
 p1Win = "Pelaaja voitti pelin!"
 pcWin = "Tietokone voitti pelin!"
 
--- main
+--Main funktio
 main :: IO ()
 main = do
     putStrLn "Ohjelma aloitettu "
@@ -36,6 +36,7 @@ luoPeli = do
     putStrLn "Peli aloitettu "
     teePakka
     sekoitaPakka
+    --Korttien jakaminen pelin alussa
     setVuoro 1
     otaKortti
     otaKortti
@@ -43,6 +44,7 @@ luoPeli = do
     otaKortti
     otaKortti
     vaihdaVuoroa
+
     peliLooppi
     
 
@@ -72,9 +74,10 @@ setVuoro x = x
 
 --Vuoron vaihto funktio
 vaihdaVuoroa :: Osallistuja -> Osallistuja
-vaihdaVuoroa = do y = getVuoro
+vaihdaVuoroa = do 
+    let y = getVuoro
     if y == Pelaaja return Jakaja
-    else return Pelaaja
+    if y == Jakaja return Pelaaja
 
 --Vuoron get funktio
 getVuoro :: Osallistuja
@@ -85,19 +88,14 @@ getVuoro = do x=vuoro
 getPisteet :: Int
 getPisteet = do
 
+--Tarkistaa pelaajan ja jakajan pisteet
+tarkistaPisteet ::
+
 getJakajanPisteet :: Int
 
 --Jakajan ja pelaajan korttien tulostamiseen
-getTilanne :: 
+tulostaTilanne :: 
 
-
---Pelaajan syötteen tarkistus
-syoteTarkistus :: a -> Int
-syoteTarkistus x = case x of
-    1 -> 1
-    2 -> 2
-    3 -> 3
-    _ -> 0 --Käyttäjän väärälle syötteelle
 
 --Jakajan liikeen päättämiseen
 jakajanLiike :: jakajaKasi -> Liike
@@ -107,31 +105,26 @@ jakajanLiike kasi
   | otherwise = Jää
   where pisteet = getJakajanPisteet kasi
 
+--"Pehmeä käsi", jakaja ottaa vielä yhden kortin lisää jos tosi ja pisteet=17
+softKasi :: [Kortti] -> Bool
+softKasi kasi = elem kasi 1 --ässä
+
+--Pelaajan syötteen tarkistus
+syoteTarkistus :: a -> Int
+syoteTarkistus x = case x of
+    1 -> 1
+    2 -> 2
+    _ -> 3 --Muut syötteet
+
+--Pelaajan liike
 pelaajanLiike :: Int -> Liike
 pelaajanLiike numero
   | numero == 1 = Otakortti
   | numero == 2 = Jää
-  | numero > 2 = Tulosta
+  | numero == 3 = Tulosta
 
-
---"Pehmeä käsi"
-softKasi :: [Kortti] -> Bool
-softKasi kasi = elem kasi 1
-
---Pelin voittajan päättämiseen
---lopullisetPisteet :: pisteArvot -> pisteArvot -> Int
---lopullisetPisteet x y = if x > y && x <= 21 then p1Win
---    else if y > x && y <=21 then pcWin
---        else if x == y then pcWin
-
-
-
---Ohjeistus:
---Jakaja jakaa aluksi kaksi korttia sekä pelaajalle että itselleen.
---Kuvakortit (kuningas, kuningatar ja jätkä) ovat numeroarvoltaan 10, ässä pelaajan valinnan mukaan joko 1 tai 11 ja muiden korttien numeroarvo on normaali.
---Ensimmäisen jaon jälkeen pelaaja voi vuorollaan joko pyytää lisäkortin tai tyytyä nykyisiin.
---Jakajan on pakko ottaa uusi kortti, mikäli hänellä on kasassa pisteitä 16 tai vähemmän, ja hänen on pakko pysähtyä, mikäli hänellä on pisteitä 17 tai enemmän.
---Mikäli pelaaja saa ventin eli tasan 21 pistettä, hän voittaa. Mikäli hän ylittää ventin, hän häviää.
---Mikäli pelaaja pääsi lähemmäs venttiä (sitä kuitenkaan ylittämättä), hän voittaa.
---Mikäli pelaaja ja jakaja päätyivät tasapeliin, jakaja voittaa.
---Toteuta järjestelmä, jossa käyttäjä pääsee pelaamaan venttiä tietokonejakajaa vastaan.
+--Pelin voittajan päättämiseen pelin lopussa, x=pelaajan pisteet ja y= jakajan pisteet
+lopullisetPisteet :: pisteArvot -> pisteArvot -> Osallistuja
+lopullisetPisteet x y = if x > y && x <= 21 then p1Win
+    else if y > x && y <=21 then pcWin
+        else if x == y then pcWin
