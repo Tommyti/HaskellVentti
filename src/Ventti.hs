@@ -29,8 +29,28 @@ pcWin = "Tietokone voitti pelin!"
 main :: IO ()
 main = do
     putStrLn "Ohjelma aloitettu "
+<<<<<<< HEAD
     StdGen <- getStdGen
     evalStateT peliLooppi $ teePeli StdGen     
+=======
+    luoPeli
+
+--Pelin luominen
+luoPeli :: IO PeliTila
+luoPeli = do
+    putStrLn "Peli aloitettu "
+    teePakka
+    sekoitaPakka
+    setVuoro 1
+    otaKortti
+    otaKortti
+    vaihdaVuoroa
+    otaKortti
+    otaKortti
+    vaihdaVuoroa
+    peliLooppi
+    
+>>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
 
 --Pyörittää peliä
 peliLooppi :: PeliTila IO ()
@@ -42,7 +62,10 @@ peliLooppi = do
     when peliLoppu hoidaLoppunutPeli
     when (not peliLoppu) peliLooppi
 
+<<<<<<< HEAD
 --Tarkistaa menikö jommalla kummalla pisteet yli, jatkavatko peliä tai voittiko toinen
+=======
+>>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
 onkoPeliLoppu :: PeliTila IO Bool
 onkoPeliLoppu = do
     curr <- get
@@ -60,7 +83,10 @@ onkoPeliLoppu = do
 
     return peliLoppu
 
+<<<<<<< HEAD
 --Näyttää tulokset ja kertoo pelaajalle jos voitti/hävisi
+=======
+>>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
 hoidaLoppunutPeli :: PeliTila IO ()
 hoidaLoppunutPeli = do
     curr <- get
@@ -72,7 +98,10 @@ hoidaLoppunutPeli = do
     when voittaja $ liftIO .  putStrLn $ "Voitit!"
     when (not voittaja) $liftIO . putStrLn $ "Hävisit!"
 
+<<<<<<< HEAD
 --Kysyy pelaajalta haluaako tämä lisää kortteja
+=======
+>>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
 hoidaPelaaja :: Pelitila IO ()
 hoidaPelaaja = do
     curr <- get
@@ -96,12 +125,19 @@ hoidaPelaaja = do
     when (vastaus == Jää) $ do
         put curr { pelaajaLiike = Jää }
 
+<<<<<<< HEAD
 --Kertoo pelaajalle mitä jakaja teki vuorollaan
+=======
+>>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
 hoidaJakaja :: PeliTila IO ()
 hoidaJakaja = do
     curr <- get
     liike <- jakajaStrategia curr $ jakajaKasi curr
+<<<<<<< HEAD
     when (liike == Otakortti) $ do
+=======
+    when (liike == Ota) $ do
+>>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
         let (kortti, pakka') = runState jaa $ pakka curr
         put curr { pakka = pakka'
                  , jakajaKasi = kortti : jakajaKasi curr }
@@ -113,24 +149,36 @@ hoidaJakaja = do
         put curr { jakajaLiike = Jää }
         liftIO . putStrLn $ "Jakaja ei ottanut korttia"
 
+<<<<<<< HEAD
 --Näyttää jakajan käden
+=======
+
+>>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
 naytaJakaja :: [Kortti] -> String
 naytaJakaja kasi = "[" ++ (show $ head kasi) ++ "," ++ (intersperse ',' hidden) ++ "]"
     where x = length $ tail kasi
           hidden = replicate x '?'
 
+<<<<<<< HEAD
 --Tarkistaa voittajan
+=======
+
+>>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
 voitti :: [Kortti] -> [Kortti] -> Bool
 voitti pelaajaK jakajaK = pelaajanPisteet > jakajanPisteet
     where pelaajanPisteet = score pelaajaKasi
           jakajanPisteet  = score jakajanKasi
 
+<<<<<<< HEAD
 --Tarkistaa pisteet
+=======
+>>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
 pisteet :: [Kortti] -> Int
 pisteet x
     | yli x    = 0
     | muuten   = paras x
 
+<<<<<<< HEAD
 --Tarkistaa meneekö pisteet yli 21
 yli :: [Kortti] -> Bool
 yli = and . map ((<) 21) . mahdPisteet
@@ -140,6 +188,14 @@ kakskytYks :: [Kortti] -> Bool
 kakskytYks = any ((==) 21) . mahdPisteet
 
 --Paras tulos
+=======
+yli :: [Kortti] -> Bool
+yli = and . map ((<) 21) . mahdPisteet
+
+kakskytYks :: [Kortti] -> Bool
+kakskytYks = any ((==) 21) . mahdPisteet
+
+>>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
 paras :: [Kortti] -> Int
 paras = maximum . filter ((>=) 21) . mahdPisteet
 
@@ -147,7 +203,10 @@ paras = maximum . filter ((>=) 21) . mahdPisteet
 otaKortti :: [Kortti]
 otaKortti = otaXKortti 0
 
+<<<<<<< HEAD
 --Tekee pelin
+=======
+>>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
 teePeli :: StdGen -> Strategia -> Peli
 teePeli x strategia = Peli
     { pakka = p'
@@ -159,7 +218,11 @@ teePeli x strategia = Peli
     where p = execState sekoitaPakka $ teePeli x
           ((pelaajaK, jakajaK), p') = runState jaa $ p
 
+<<<<<<< HEAD
 --Jakaa kortit
+=======
+--Jää
+>>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
 jaa :: PakanTila ([Kortti], [Kortti])
 jaa = do
     pelaaja   <- ota
@@ -168,6 +231,7 @@ jaa = do
     jakaja'   <- ota
     let pelaaja1 = [pelaaja, pelaaja']
         jakaja1  = [jakaja, jakaja']
+<<<<<<< HEAD
     return (pelaaja1, jakaja1)
 
 --Vuoron asetus funktio, 1=pelaaja 2=jakaja
@@ -238,3 +302,6 @@ lopullisetPisteet x y = if x > y && x <= 21 then p1Win
 --Mikäli pelaaja pääsi lähemmäs venttiä (sitä kuitenkaan ylittämättä), hän voittaa.
 --Mikäli pelaaja ja jakaja päätyivät tasapeliin, jakaja voittaa.
 --Toteuta järjestelmä, jossa käyttäjä pääsee pelaamaan venttiä tietokonejakajaa vastaan.
+=======
+    return (pelaaja1, jakaja1)
+>>>>>>> d380a4501e36a326a71aa4a2712ef3af9fafed62
